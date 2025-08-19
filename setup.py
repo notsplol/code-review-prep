@@ -6,12 +6,11 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="code-review-prep",
     version="0.1.0",
-    author="Shivam Patel",
-    author_email="shivamp12@hotmail.com",
+    author="splol",
     description="CLI tool to prepare code reviews",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/code-review-prep",
+    url="https://github.com/notsplol/code-review-prep",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     classifiers=[
