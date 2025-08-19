@@ -8,7 +8,7 @@ class BranchAnalyzer:
 
     def get_changed_files(self, branch_name: str, base_branch: str = "main"):
         """
-        Returns list of changed files between `base_branch` and `branch_name`.
+        Returns a list of changed files between `base_branch` and `branch_name`.
 
         Each entry:
         {'file': str, 'status': A|M|D, 'additions': int, 'deletions': int}

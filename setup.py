@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="code-review-prep",
     version="0.1.0",
-    author="splol",
+    author="notsplol",
     description="CLI tool to prepare code reviews",
     long_description=long_description,
     long_description_content_type="text/markdown",
