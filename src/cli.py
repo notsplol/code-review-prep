@@ -7,14 +7,15 @@ from reporter import ReviewReporter
 
 @click.command()
 @click.option(
-    "--branch", required=True, help="Feature branch name to compare against main"
+    "--branch", required=True, help="Feature branch name to" "  compare against main"
 )
 @click.option(
-    "--base", default="main", show_default=True, help="Base branch to compare from"
+    "--base", default="main", show_default=True, help="Base branch to " "compare from"
 )
 def review_ready(branch: str, base: str):
     """
-    Analyze branch diffs, categorize changes, assess risks, and print a review-ready summary.
+    Analyze branch diffs, categorize changes, assess risks,
+    and print a review-ready summary.
     """
     analyzer = BranchAnalyzer()
     categorizer = ChangeCategorizer()

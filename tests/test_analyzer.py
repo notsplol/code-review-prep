@@ -1,4 +1,3 @@
-import pytest
 from analyzer import BranchAnalyzer
 
 

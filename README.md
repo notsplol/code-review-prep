@@ -9,13 +9,13 @@ Clone the repo:
 git clone https://github.com/yourusername/code-review-prep.git
 cd code-review-prep
 ```
-Create virtual env and activate:
+Create virtual env and activate before starting:
 ```bash
 python3 -m venv venv
 source venv/bin/activate  #for macOS/Linux
 venv\Scripts\activate     #for Windows
 ```
-Install dependencies:
+Install the dependencies like this:
 `pip install -e .[dev]   # installs the CLI and dev dependencies`
 
 Run the CLI tool on any branch:

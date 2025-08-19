@@ -121,8 +121,7 @@ class ChangeCategorizer:
                      checklist items (lightweight heuristics)
     """
 
-    def categorize_changes(self,
-                           diff_data: List[Dict]) -> Dict[str, List[Dict]]:
+    def categorize_changes(self, diff_data: List[Dict]) -> Dict[str, List[Dict]]:
         categories = {
             "added": [],
             "modified": [],
@@ -204,20 +203,16 @@ class ChangeCategorizer:
 
         # missing tests: touched code but no tests changed at all
         touched_code = any(
-            _is_code_file(f["file"]) for f in diff_data
-            if f.get("status") != "D"
+            _is_code_file(f["file"]) for f in diff_data if f.get("status") != "D"
         )
         touched_tests = any(
-            _is_test_file(f["file"]) for f in diff_data
-            if f.get("status") != "D"
+            _is_test_file(f["file"]) for f in diff_data if f.get("status") != "D"
         )
         if touched_code and not touched_tests:
             # add top 3 most changed code files as examples
             code_sorted = sorted(
                 [f for f in diff_data if _is_code_file(f["file"])],
-                key=lambda x: (
-                    x.get("additions", 0) + x.get("deletions", 0)
-                ),
+                key=lambda x: (x.get("additions", 0) + x.get("deletions", 0)),
                 reverse=True,
             )
             risks["missing_tests"] = code_sorted[:3]
