@@ -1,5 +1,5 @@
 # Code Review Prep Tool
-This project is a pretty basic Python CLI tool to automatically analyze a git branch, make short summaries of changes, suggest review focus areas, and recommend code reviewers.
+This project is a Python CLI tool to automatically analyze a git branch, make short summaries of changes, suggest review focus areas, and recommend code reviewers.
 
 ## Installation
 
@@ -33,6 +33,10 @@ Flags:
 - Code is organized under `src/`
 - Tests are under `tests/`
 - Use `black .` for formatting and `flake8 src tests` for linting
+
+## Possible Future Feature
+
+Integrate with AI to generate automated detailed summaries and warnings
 
 
 ## Running Tests
