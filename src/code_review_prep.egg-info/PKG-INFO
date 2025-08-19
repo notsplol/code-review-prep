@@ -2,14 +2,14 @@ Metadata-Version: 2.4
 Name: code-review-prep
 Version: 0.1.0
 Summary: CLI tool to prepare code reviews
-Home-page: https://github.com/yourusername/code-review-prep
-Author: Shivam Patel
-Author-email: shivamp12@hotmail.com
+Home-page: https://github.com/notsplol/code-review-prep
+Author: notsplol
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
+License-File: LICENSE
 Requires-Dist: click
 Requires-Dist: rich
 Requires-Dist: GitPython
@@ -21,11 +21,11 @@ Requires-Dist: pytest>=6.0; extra == "dev"
 Requires-Dist: black; extra == "dev"
 Requires-Dist: flake8; extra == "dev"
 Dynamic: author
-Dynamic: author-email
 Dynamic: classifier
 Dynamic: description
 Dynamic: description-content-type
 Dynamic: home-page
+Dynamic: license-file
 Dynamic: provides-extra
 Dynamic: requires-dist
 Dynamic: requires-python
@@ -42,13 +42,13 @@ Clone the repo:
 git clone https://github.com/yourusername/code-review-prep.git
 cd code-review-prep
 ```
-Create virtual env and activate:
+Create virtual env and activate before starting:
 ```bash
 python3 -m venv venv
 source venv/bin/activate  #for macOS/Linux
 venv\Scripts\activate     #for Windows
 ```
-Install dependencies:
+Install the dependencies like this:
 `pip install -e .[dev]   # installs the CLI and dev dependencies`
 
 Run the CLI tool on any branch:
@@ -65,4 +65,10 @@ Flags:
 
 - Code is organized under `src/`
 - Tests are under `tests/`
-- Use `black` for formatting and `flake8` for linting
+- Use `black .` for formatting and `flake8 src tests` for linting
+
+
+## Running Tests
+
+```bash
+pytest tests/ --maxfail=1 --disable-warnings -v

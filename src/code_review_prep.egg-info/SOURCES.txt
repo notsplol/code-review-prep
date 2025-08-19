@@ -1,3 +1,4 @@
+LICENSE
 README.md
 setup.py
 src/code_review_prep.egg-info/PKG-INFO
