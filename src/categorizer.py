@@ -5,7 +5,7 @@ class ChangeCategorizer:
     def categorize_changes(self, diff_data: list):
         """
         Input: list of file diffs from BranchAnalyzer
-        Output: dict of categorized changes
+        Output: dictionary of all the categorized changes
         Example:
         {
             'new_features': [...],
@@ -20,9 +20,9 @@ class ChangeCategorizer:
 
     def assess_risks(self, diff_data: list):
         """
-        Identify potential risks:
+        Make highlights for potential risks:
         - Large diffs
-        - Sensitive files (db, auth, payments)
-        - New dependencies
+        - Sensitive file changes (db, auth, payments)
+        - New dependencies added
         """
         raise NotImplementedError

@@ -9,12 +9,12 @@ class ReviewReporter:
 
     def print_summary(self, branch_name: str, summary: dict):
         """
-        Pretty-print review summary to console.
+        Pretty-print review summary to console
         """
         raise NotImplementedError
 
     def format_checklist(self, items: list):
         """
-        Return formatted checklist string.
+        return formatted checklist
         """
         raise NotImplementedError

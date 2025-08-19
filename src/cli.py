@@ -10,23 +10,23 @@ def review_ready(branch):
     categorizer = ChangeCategorizer()
     reporter = ReviewReporter()
 
-    # Step 1: Analyze branch
+    #step 1
     diff_data = analyzer.get_changed_files(branch)
 
-    # Step 2: Categorize changes + assess risks
+    #step 2
     categories = categorizer.categorize_changes(diff_data)
     risks = categorizer.assess_risks(diff_data)
 
-    # Step 3: Build summary (stub for now)
+    #step 3
     summary = {
         "branch": branch,
         "diff_data": diff_data,
         "categories": categories,
         "risks": risks,
-        "suggested_reviewers": ["@alice", "@bob"],  # placeholder
+        "suggested_reviewers": ["@alice", "@bob"],
     }
 
-    # Step 4: Print results
+    #step 4
     reporter.print_summary(branch, summary)
 
 if __name__ == "__main__":
