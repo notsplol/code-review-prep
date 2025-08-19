@@ -2,6 +2,8 @@ click
 rich
 GitPython
 pathlib
+black
+flake8
 
 [dev]
 pytest>=6.0

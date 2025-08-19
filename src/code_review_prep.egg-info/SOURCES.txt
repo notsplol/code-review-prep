@@ -6,6 +6,6 @@ src/code_review_prep.egg-info/dependency_links.txt
 src/code_review_prep.egg-info/entry_points.txt
 src/code_review_prep.egg-info/requires.txt
 src/code_review_prep.egg-info/top_level.txt
-tests/testAnalyzer.py
-tests/testCategorizer.py
-tests/testCli.py
+tests/test_analyzer.py
+tests/test_categorizer.py
+tests/test_cli.py

@@ -64,7 +64,9 @@ class ReviewReporter:
         reviewers = summary.get("suggested_reviewers", [])
 
         console.print()
-        console.print(Panel.fit(f"[bold]📋 Review Summary for [cyan]{branch_name}[/cyan][/bold]"))
+        console.print(
+            Panel.fit(f"[bold]📋 Review Summary for [cyan]{branch_name}[/cyan][/bold]")
+        )
 
         console.print(Rule())
 
@@ -76,19 +78,30 @@ class ReviewReporter:
         overview.add_row("⏱️ Est. review time", f"{risks['estimate_minutes']} minutes")
         console.print(overview)
 
-        
         console.print()
-        console.print(Panel(self._render_categories(categories), title="Change Overview", expand=False))
+        console.print(
+            Panel(
+                self._render_categories(categories),
+                title="Change Overview",
+                expand=False,
+            )
+        )
 
-        
         if risks["focus_areas"]:
             console.print()
-            console.print(Panel(self._render_focus(risks["focus_areas"]), title="🔍 Review Focus Areas", expand=False))
+            console.print(
+                Panel(
+                    self._render_focus(risks["focus_areas"]),
+                    title="🔍 Review Focus Areas",
+                    expand=False,
+                )
+            )
 
-        
         concerns: List[str] = []
         if risks["large_changes"]:
-            concerns.append(f"{len(risks['large_changes'])} large files changed (≥100 LOC churn)")
+            concerns.append(
+                f"{len(risks['large_changes'])} large files changed (≥100 LOC churn)"
+            )
         if risks["new_dependencies"]:
             concerns.append("New/updated dependencies detected")
         sens = risks["sensitive_areas"]
@@ -104,9 +117,10 @@ class ReviewReporter:
             for c in concerns:
                 concerns_table.add_row(f"• {c}")
             console.print()
-            console.print(Panel(concerns_table, title="⚠️ Potential Concerns", expand=False))
+            console.print(
+                Panel(concerns_table, title="⚠️ Potential Concerns", expand=False)
+            )
 
-        
         if reviewers:
             rtxt = Text()
             for r in reviewers:
@@ -114,10 +128,15 @@ class ReviewReporter:
             console.print()
             console.print(Panel(rtxt, title="👥 Suggested Reviewers", expand=False))
 
-        
         checklist_items = summary.get("checklist", [])
         if checklist_items:
             console.print()
-            console.print(Panel(self._render_checklist(checklist_items), title="✅ Checklist for Reviewer", expand=False))
+            console.print(
+                Panel(
+                    self._render_checklist(checklist_items),
+                    title="✅ Checklist for Reviewer",
+                    expand=False,
+                )
+            )
 
         console.print()

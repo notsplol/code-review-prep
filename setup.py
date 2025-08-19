@@ -20,12 +20,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.7",
-    install_requires=[
-        "click",
-        "rich",
-        "GitPython",
-        "pathlib",
-    ],
+    install_requires=["click", "rich", "GitPython", "pathlib", "black", "flake8"],
     extras_require={
         "dev": [
             "pytest>=6.0",
@@ -39,4 +34,3 @@ setup(
         ],
     },
 )
-

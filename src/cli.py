@@ -6,8 +6,12 @@ from reporter import ReviewReporter
 
 
 @click.command()
-@click.option("--branch", required=True, help="Feature branch name to compare against main")
-@click.option("--base", default="main", show_default=True, help="Base branch to compare from")
+@click.option(
+    "--branch", required=True, help="Feature branch name to compare against main"
+)
+@click.option(
+    "--base", default="main", show_default=True, help="Base branch to compare from"
+)
 def review_ready(branch: str, base: str):
     """
     Analyze branch diffs, categorize changes, assess risks, and print a review-ready summary.
@@ -16,7 +20,7 @@ def review_ready(branch: str, base: str):
     categorizer = ChangeCategorizer()
     reporter = ReviewReporter()
 
-   #step 1
+    # step 1
     try:
         diff_data = analyzer.get_changed_files(branch, base)
     except Exception as e:
@@ -27,13 +31,13 @@ def review_ready(branch: str, base: str):
         click.echo("No differences found between base and branch.")
         sys.exit(0)
 
-    #step 2
+    # step 2
     categories = categorizer.categorize_changes(diff_data)
     risks = categorizer.assess_risks(diff_data)
     suggested_reviewers = categorizer.suggest_reviewers(diff_data)
     checklist = categorizer.checklist(risks)
 
-    #step 3
+    # step 3
     summary = {
         "branch": branch,
         "diff_data": diff_data,
@@ -43,7 +47,7 @@ def review_ready(branch: str, base: str):
         "checklist": checklist,
     }
 
-    #step 4
+    # step 4
     reporter.print_summary(branch, summary)
 
 

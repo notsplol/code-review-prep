@@ -1,6 +1,7 @@
 import pytest
 from categorizer import ChangeCategorizer
 
+
 def test_categorize_changes():
     data = [
         {"file": "src/foo.py", "status": "M", "additions": 10, "deletions": 2},
@@ -12,6 +13,7 @@ def test_categorize_changes():
     assert len(categories["code"]) == 1
     assert len(categories["tests"]) == 1
     assert len(categories["docs"]) == 1
+
 
 def test_risk_assessment():
     data = [

@@ -7,13 +7,12 @@ class BranchAnalyzer:
         self.repo = Repo(Path(repo_path).resolve())
 
     def get_changed_files(self, branch_name: str, base_branch: str = "main"):
-        """
+        '''
         Returns list of changed files between `base_branch` and `branch_name`.
 
         Each entry:
-          { 'file': str, 'status': 'A'|'M'|'D', 'additions': int, 'deletions': int }
-        """
-
+        {'file': str, 'status': A|M|D, 'additions': int, 'deletions': int}
+        '''
         def _resolve_ref(name: str) -> str:
             # prefer local heads
             local_heads = [h.name for h in self.repo.heads]
@@ -35,20 +34,24 @@ class BranchAnalyzer:
                 self.repo.commit(name)
                 return name
             except Exception:
-                raise ValueError(f"Branch or ref '{name}' does not exist locally or on origin")
+                raise ValueError(
+                    f"Branch or ref '{name}' does not exist "
+                    "locally or on origin"
+                )
 
         base_ref = _resolve_ref(base_branch)
         target_ref = _resolve_ref(branch_name)
 
-        # get status map from name-status
-        name_status = self.repo.git.diff(f"{base_ref}..{target_ref}", "--name-status")
+    # get status map from name-status
+        name_status = self.repo.git.diff(f"{base_ref}..{target_ref}",
+                                         "--name-status")
         status_map = {}
         for ln in name_status.splitlines():
             parts = ln.split("\t")
             if len(parts) >= 2:
                 status_map[parts[1]] = parts[0]
 
-        # parse additions/deletions from numstat
+    # parse additions and deletions from numstat
         numstat = self.repo.git.diff(f"{base_ref}..{target_ref}", "--numstat")
         changed_files = []
         for line in numstat.splitlines():
@@ -60,12 +63,13 @@ class BranchAnalyzer:
             additions = int(additions) if additions.isdigit() else 0
             deletions = int(deletions) if deletions.isdigit() else 0
             status = status_map.get(file_path, "M")
-            changed_files.append({
-                "file": file_path,
-                "status": status,
-                "additions": additions,
-                "deletions": deletions,
-            })
+            changed_files.append(
+                {
+                    "file": file_path,
+                    "status": status,
+                    "additions": additions,
+                    "deletions": deletions,
+                }
+            )
 
         return changed_files
-

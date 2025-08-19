@@ -1,28 +1,72 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 
-#helpers
+# helpers
 
 CODE_EXTS = {
-    ".py", ".js", ".jsx", ".ts", ".tsx", ".java", ".go", ".rb", ".php", ".cs", ".cpp", ".c", ".rs", ".kt", ".m", ".swift"
+    ".py",
+    ".js",
+    ".jsx",
+    ".ts",
+    ".tsx",
+    ".java",
+    ".go",
+    ".rb",
+    ".php",
+    ".cs",
+    ".cpp",
+    ".c",
+    ".rs",
+    ".kt",
+    ".m",
+    ".swift",
 }
 TEST_DIR_TOKENS = {"tests", "__tests__", "spec", "test"}
 TEST_FILE_TOKENS = {"test_", "_test", ".spec.", ".spec_", ".spec-"}
 DOC_EXTS = {".md", ".rst", ".adoc"}
-CONFIG_EXTS = {".json", ".yaml", ".yml", ".toml", ".ini", ".env", ".properties"}
+CONFIG_EXTS = {
+    ".json",
+    ".yaml",
+    ".yml",
+    ".toml",
+    ".ini",
+    ".env",
+    ".properties",
+}
 DEPENDENCY_FILES = {
-    "requirements.txt", "poetry.lock", "pyproject.toml", "Pipfile", "Pipfile.lock",
-    "package.json", "package-lock.json", "yarn.lock", "pnpm-lock.yaml",
-    "go.mod", "go.sum", "Cargo.toml", "Cargo.lock", "Gemfile", "Gemfile.lock"
+    "requirements.txt",
+    "poetry.lock",
+    "pyproject.toml",
+    "Pipfile",
+    "Pipfile.lock",
+    "package.json",
+    "package-lock.json",
+    "yarn.lock",
+    "pnpm-lock.yaml",
+    "go.mod",
+    "go.sum",
+    "Cargo.toml",
+    "Cargo.lock",
+    "Gemfile",
+    "Gemfile.lock",
 }
 SENSITIVE_AREAS = {
     "auth": ("auth", "authentication", "oauth", "jwt"),
     "payments": ("payment", "payments", "billing", "stripe", "paypal"),
-    "database": ("db", "database", "models", "migrations", "repository", "queries", "dao", "prisma", "sequelize"),
+    "database": (
+        "db",
+        "database",
+        "models",
+        "migrations",
+        "repository",
+        "queries",
+        "dao",
+        "prisma",
+        "sequelize",
+    ),
     "api": ("api", "endpoints", "controller", "router"),
-    "config": ("config", "settings", "secrets", ".env")
+    "config": ("config", "settings", "secrets", ".env"),
 }
 
 
@@ -47,7 +91,9 @@ def _is_doc_file(path: str) -> bool:
 
 
 def _is_config_file(path: str) -> bool:
-    return _ext(path) in CONFIG_EXTS or any(tok in path.lower() for tok in ("config", "settings"))
+    return _ext(path) in CONFIG_EXTS or any(
+        tok in path.lower() for tok in ("config", "settings")
+    )
 
 
 def _is_dependency_file(path: str) -> bool:
@@ -62,17 +108,21 @@ def _touches_sensitive_area(path: str) -> List[str]:
             hits.append(area)
     return hits
 
-#main
+
+# main
+
 
 class ChangeCategorizer:
     """
     Consumes diff_data from BranchAnalyzer and produces:
       - categories: dict of categorized changes
       - risks: structured risk assessment
-      - suggestions: suggested reviewers & checklist items (lightweight heuristics)
+      - suggestions: suggested reviewers &
+                     checklist items (lightweight heuristics)
     """
 
-    def categorize_changes(self, diff_data: List[Dict]) -> Dict[str, List[Dict]]:
+    def categorize_changes(self,
+                           diff_data: List[Dict]) -> Dict[str, List[Dict]]:
         categories = {
             "added": [],
             "modified": [],
@@ -90,7 +140,6 @@ class ChangeCategorizer:
             status = f.get("status", "M")
             placed_specific = False
 
-            
             if _is_test_file(path):
                 categories["tests"].append(f)
                 placed_specific = True
@@ -110,7 +159,7 @@ class ChangeCategorizer:
             if not placed_specific:
                 categories["other"].append(f)
 
-            #status
+            # status
             if status in ("A", "added"):
                 categories["added"].append(f)
             elif status in ("M", "modified"):
@@ -122,25 +171,25 @@ class ChangeCategorizer:
 
     def assess_risks(self, diff_data: List[Dict]) -> Dict:
         risks = {
-            "large_changes": [],          
-            "sensitive_areas": {},        
-            "missing_tests": [],          
-            "new_dependencies": [],      
-            "focus_areas": [],            
-            "estimate_minutes": 0,    
+            "large_changes": [],
+            "sensitive_areas": {},
+            "missing_tests": [],
+            "new_dependencies": [],
+            "focus_areas": [],
+            "estimate_minutes": 0,
         }
 
         total_add = sum(f.get("additions", 0) for f in diff_data)
         total_del = sum(f.get("deletions", 0) for f in diff_data)
         total_files = len(diff_data)
 
-        #large file changes
+        # large file changes
         for f in diff_data:
             churn = f.get("additions", 0) + f.get("deletions", 0)
             if churn >= 100:
                 risks["large_changes"].append({**f, "churn": churn})
 
-        #sensitive changes
+        # sensitive changes
         sensitive_map: Dict[str, List[Dict]] = {}
         for f in diff_data:
             areas = _touches_sensitive_area(f["file"])
@@ -148,38 +197,50 @@ class ChangeCategorizer:
                 sensitive_map.setdefault(a, []).append(f)
         risks["sensitive_areas"] = sensitive_map
 
-        #dependencies
-        risks["new_dependencies"] = [f for f in diff_data if _is_dependency_file(f["file"])]
+        # dependencies
+        risks["new_dependencies"] = [
+            f for f in diff_data if _is_dependency_file(f["file"])
+        ]
 
-        #missing tests: touched code but no tests changed at all
-        touched_code = any(_is_code_file(f["file"]) for f in diff_data if f.get("status") != "D")
-        touched_tests = any(_is_test_file(f["file"]) for f in diff_data if f.get("status") != "D")
+        # missing tests: touched code but no tests changed at all
+        touched_code = any(
+            _is_code_file(f["file"]) for f in diff_data
+            if f.get("status") != "D"
+        )
+        touched_tests = any(
+            _is_test_file(f["file"]) for f in diff_data
+            if f.get("status") != "D"
+        )
         if touched_code and not touched_tests:
-            #add top 3 most changed code files as examples
+            # add top 3 most changed code files as examples
             code_sorted = sorted(
                 [f for f in diff_data if _is_code_file(f["file"])],
-                key=lambda x: x.get("additions", 0) + x.get("deletions", 0),
-                reverse=True
+                key=lambda x: (
+                    x.get("additions", 0) + x.get("deletions", 0)
+                ),
+                reverse=True,
             )
             risks["missing_tests"] = code_sorted[:3]
 
-        
         focus = []
         focus.extend(risks["large_changes"])
         for files in sensitive_map.values():
             focus.extend(files)
-        
+
         seen = set()
         focus_unique = []
-        for f in sorted(focus, key=lambda x: x.get("additions", 0) + x.get("deletions", 0), reverse=True):
+        for f in sorted(
+            focus,
+            key=lambda x: x.get("additions", 0) + x.get("deletions", 0),
+            reverse=True,
+        ):
             if f["file"] in seen:
                 continue
             seen.add(f["file"])
             focus_unique.append(f)
         risks["focus_areas"] = focus_unique[:5]
 
-        
-        #base 3 min + 1 min per file + (total LOC changed / 50)
+        # base 3 min + 1 min per file + (total LOC changed / 50)
         estimate = 3 + total_files * 1 + int((total_add + total_del) / 50)
         risks["estimate_minutes"] = max(5, min(60, estimate))
 
@@ -194,8 +255,9 @@ class ChangeCategorizer:
         for f in diff_data:
             parts = f["file"].split("/")
             if len(parts) > 1:
-                owners.add("@" + parts[0].replace("_", "-"))  # e.g., @payments, @api
-        # Stable, small list
+                # directory 'payments' -> reviewer '@payments'
+                owners.add("@" + parts[0].replace("_", "-"))
+        # stable, small list
         suggestions = sorted(list(owners))[:4]
         return suggestions
 
@@ -217,4 +279,3 @@ class ChangeCategorizer:
         if risks["large_changes"]:
             items.append("Consider splitting oversized files/functions")
         return items
-
