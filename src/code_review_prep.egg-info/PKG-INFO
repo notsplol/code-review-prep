@@ -1,0 +1,29 @@
+Metadata-Version: 2.4
+Name: code-review-prep
+Version: 0.1.0
+Summary: A CLI tool to prepare code reviews automatically
+Home-page: https://github.com/yourusername/code-review-prep
+Author: Shivam Patel
+Author-email: shivamp12@hotmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: click
+Requires-Dist: rich
+Requires-Dist: GitPython
+Requires-Dist: pathlib
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
