@@ -18,9 +18,7 @@ def review_ready(branch: str, base: str):
 
    #step 1
     try:
-        # Note: BranchAnalyzer currently compares against 'main' internally.
-        # If you add base support there later, pass it through.
-        diff_data = analyzer.get_changed_files(branch)
+        diff_data = analyzer.get_changed_files(branch, base)
     except Exception as e:
         click.echo(f"[error] Failed to compute diff: {e}", err=True)
         sys.exit(1)

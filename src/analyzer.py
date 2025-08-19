@@ -1,49 +1,65 @@
 from git import Repo
 from pathlib import Path
 
+
 class BranchAnalyzer:
-    def __init__(self, repo_path="."):
+    def __init__(self, repo_path: str = "."):
         self.repo = Repo(Path(repo_path).resolve())
 
-    def get_changed_files(self, branch_name: str):
+    def get_changed_files(self, branch_name: str, base_branch: str = "main"):
         """
-        Similar to diff. Returns list of changed files between main and branch_name.
-        Each entry: {
-            'file': str,
-            'status': 'A' | 'M' | 'D',
-            'additions': int,
-            'deletions': int
-        }
+        Returns list of changed files between `base_branch` and `branch_name`.
+
+        Each entry:
+          { 'file': str, 'status': 'A'|'M'|'D', 'additions': int, 'deletions': int }
         """
-        #branch existance step
-        if branch_name not in [head.name for head in self.repo.heads]:
-            raise ValueError(f"Branch '{branch_name}' does not exist.")
 
-        main_branch = "main"
-        diff = self.repo.git.diff(
-            f"{main_branch}..{branch_name}", "--numstat", "--name-status"
-        )
+        def _resolve_ref(name: str) -> str:
+            # prefer local heads
+            local_heads = [h.name for h in self.repo.heads]
+            if name in local_heads:
+                return name
 
+            # try origin/<name>
+            try:
+                origin = self.repo.remotes.origin
+                origin_refs = [r.name for r in origin.refs]
+            except Exception:
+                origin_refs = []
+
+            if f"origin/{name}" in origin_refs:
+                return f"origin/{name}"
+
+            # allow commit-ish values as a last resort
+            try:
+                self.repo.commit(name)
+                return name
+            except Exception:
+                raise ValueError(f"Branch or ref '{name}' does not exist locally or on origin")
+
+        base_ref = _resolve_ref(base_branch)
+        target_ref = _resolve_ref(branch_name)
+
+        # get status map from name-status
+        name_status = self.repo.git.diff(f"{base_ref}..{target_ref}", "--name-status")
+        status_map = {}
+        for ln in name_status.splitlines():
+            parts = ln.split("\t")
+            if len(parts) >= 2:
+                status_map[parts[1]] = parts[0]
+
+        # parse additions/deletions from numstat
+        numstat = self.repo.git.diff(f"{base_ref}..{target_ref}", "--numstat")
         changed_files = []
-        for line in diff.splitlines():
+        for line in numstat.splitlines():
             parts = line.strip().split("\t")
             if len(parts) < 3:
                 continue
 
-            #first two columns = additions & deletions, third = file path
             additions, deletions, file_path = parts[:3]
             additions = int(additions) if additions.isdigit() else 0
             deletions = int(deletions) if deletions.isdigit() else 0
-
-            #get status (Added/Modified/Deleted)
-            status_output = self.repo.git.diff(
-                f"{main_branch}..{branch_name}", "--name-status"
-            )
-            status_map = {
-                f.split("\t")[1]: f.split("\t")[0] for f in status_output.splitlines()
-            }
             status = status_map.get(file_path, "M")
-
             changed_files.append({
                 "file": file_path,
                 "status": status,
