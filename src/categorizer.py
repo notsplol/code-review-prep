@@ -235,26 +235,11 @@ class ChangeCategorizer:
             focus_unique.append(f)
         risks["focus_areas"] = focus_unique[:5]
 
-        # base 3 min + 1 min per file + (total LOC changed / 50)
-        estimate = 3 + total_files * 1 + int((total_add + total_del) / 50)
+        # base 3 min + 1 min per file + (total LOC changed / 100)
+        estimate = 3 + total_files * 1 + int((total_add + total_del) / 100)
         risks["estimate_minutes"] = max(5, min(60, estimate))
 
         return risks
-
-    def suggest_reviewers(self, diff_data: List[Dict]) -> List[str]:
-        """
-        Lightweight heuristic: suggest owners by directory names.
-        If later you integrate `git blame`, wire it here.
-        """
-        owners = set()
-        for f in diff_data:
-            parts = f["file"].split("/")
-            if len(parts) > 1:
-                # directory 'payments' -> reviewer '@payments'
-                owners.add("@" + parts[0].replace("_", "-"))
-        # stable, small list
-        suggestions = sorted(list(owners))[:4]
-        return suggestions
 
     def checklist(self, risks: Dict) -> List[str]:
         items = [

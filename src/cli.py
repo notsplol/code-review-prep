@@ -35,7 +35,6 @@ def review_ready(branch: str, base: str):
     # step 2
     categories = categorizer.categorize_changes(diff_data)
     risks = categorizer.assess_risks(diff_data)
-    suggested_reviewers = categorizer.suggest_reviewers(diff_data)
     checklist = categorizer.checklist(risks)
 
     # step 3
@@ -44,7 +43,6 @@ def review_ready(branch: str, base: str):
         "diff_data": diff_data,
         "categories": categories,
         "risks": risks,
-        "suggested_reviewers": suggested_reviewers,
         "checklist": checklist,
     }
 

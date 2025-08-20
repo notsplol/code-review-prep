@@ -15,12 +15,12 @@ class BranchAnalyzer:
         """
 
         def _resolve_ref(name: str) -> str:
-            # prefer local heads
+            
             local_heads = [h.name for h in self.repo.heads]
             if name in local_heads:
                 return name
 
-            # try origin/<name>
+            
             try:
                 origin = self.repo.remotes.origin
                 origin_refs = [r.name for r in origin.refs]
@@ -30,7 +30,7 @@ class BranchAnalyzer:
             if f"origin/{name}" in origin_refs:
                 return f"origin/{name}"
 
-            # allow commit-ish values as a last resort
+            
             try:
                 self.repo.commit(name)
                 return name

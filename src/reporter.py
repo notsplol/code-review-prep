@@ -61,7 +61,6 @@ class ReviewReporter:
         stats = self._sum_stats(diff_data)
         risks = summary["risks"]
         categories = summary["categories"]
-        reviewers = summary.get("suggested_reviewers", [])
 
         console.print()
         console.print(
@@ -120,13 +119,6 @@ class ReviewReporter:
             console.print(
                 Panel(concerns_table, title="⚠️ Potential Concerns", expand=False)
             )
-
-        if reviewers:
-            rtxt = Text()
-            for r in reviewers:
-                rtxt.append(f"• {r}\n")
-            console.print()
-            console.print(Panel(rtxt, title="👥 Suggested Reviewers", expand=False))
 
         checklist_items = summary.get("checklist", [])
         if checklist_items:
