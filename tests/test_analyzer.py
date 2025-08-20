@@ -2,7 +2,6 @@ from analyzer import BranchAnalyzer
 
 
 def test_dummy_diff(monkeypatch):
-    # fake get_changed_file to simulate branch diff
     def fake_get_changed_files(self, branch_name, base_branch="main"):
         return [
             {"file": "src/foo.py", "status": "M", "additions": 10, "deletions": 2},

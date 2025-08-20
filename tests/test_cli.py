@@ -2,7 +2,7 @@ import subprocess
 
 
 def test_cli_runs():
-    # Run CLI with fake branch, ensure that exit code is 0
+    # ensure that exit code is 0
     result = subprocess.run(
         ["python", "src/cli.py", "--branch=feature/test-branch"],
         capture_output=True,

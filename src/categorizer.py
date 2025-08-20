@@ -201,7 +201,7 @@ class ChangeCategorizer:
             f for f in diff_data if _is_dependency_file(f["file"])
         ]
 
-        # missing tests: touched code but no tests changed at all
+        # missing tests
         touched_code = any(
             _is_code_file(f["file"]) for f in diff_data if f.get("status") != "D"
         )
@@ -209,7 +209,7 @@ class ChangeCategorizer:
             _is_test_file(f["file"]) for f in diff_data if f.get("status") != "D"
         )
         if touched_code and not touched_tests:
-            # add top 3 most changed code files as examples
+            # top 3 most changed code files
             code_sorted = sorted(
                 [f for f in diff_data if _is_code_file(f["file"])],
                 key=lambda x: (x.get("additions", 0) + x.get("deletions", 0)),
@@ -241,6 +241,7 @@ class ChangeCategorizer:
 
         return risks
 
+    # this function could use a major overhaul
     def checklist(self, risks: Dict) -> List[str]:
         items = [
             "Verify error handling on modified critical paths",
